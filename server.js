@@ -22,25 +22,6 @@ var app = express();
 var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
 
-var ExpressPeerServer = require('peer').ExpressPeerServer;
-var options = {
-    debug: true
-}
-var server = require('http').createServer(app);
-app.use('/peerjs', ExpressPeerServer(server, options));
-
-server.listen(9000);
-/*
-var PeerServer = require('peer').PeerServer;
-
-var server = PeerServer({
-    port: 9000,
-    path: '/peerjs',
-    ssl: {
-        key: fs.readFileSync('./certificates/key.pem', 'utf8'),
-        cert: fs.readFileSync('./certificates/cert.pem', 'utf8')
-    }
-});
 /**
  *  Show in the console the URL access for other devices in the network
  */
