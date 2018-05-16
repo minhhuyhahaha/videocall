@@ -22,7 +22,12 @@ var app = express();
 var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
 
-app.use('/peerjs', require('peer').ExpressPeerServer(app.listen(8080)));
+var ExpressPeerServer = require('peer').ExpressPeerServer;
+var server = app.listen(8080);
+var options = {
+    debug: true
+}
+app.use('/peerjs', ExpressPeerServer(server, options));
 /*
 var PeerServer = require('peer').PeerServer;
 
