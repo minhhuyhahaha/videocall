@@ -23,11 +23,13 @@ var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
 
 var ExpressPeerServer = require('peer').ExpressPeerServer;
-var server = app.listen(8080);
 var options = {
     debug: true
 }
+var server = require('http').createServer(app);
 app.use('/peerjs', ExpressPeerServer(server, options));
+
+server.listen(9000);
 /*
 var PeerServer = require('peer').PeerServer;
 
