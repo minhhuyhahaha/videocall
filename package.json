@@ -1,0 +1,12 @@
+{
+    "name": "peerjs-videochat-application",
+	"main": "server.js",
+	"scripts": {
+		"start": "node server.js"
+	},
+    "version": "1.0.0",
+    "dependencies": {
+        "express": "^4.15.3",
+        "peerjs": "~0.3.14"
+    }
+}
