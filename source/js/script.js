@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
      */
     var peer = new Peer({
         host: "live-stream.193b.starter-ca-central-1.openshiftapps.com",
-        port: 443,
+        port: 8080,
         path: '/peerjs',
         debug: 3,
         config: {
