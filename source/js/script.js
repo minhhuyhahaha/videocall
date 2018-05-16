@@ -12,23 +12,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
      *
      * The iceServers on this example are public and can be used for your project.
      */
-    var peer = new Peer({
-        host: "live-stream.193b.starter-ca-central-1.openshiftapps.com",
-        port: 8080,
-        path: '/peerjs',
-        debug: 3,
-        config: {
-            'iceServers': [
-                { url: 'stun:stun1.l.google.com:19302' },
-                {
-                    url: 'turn:numb.viagenie.ca',
-                    credential: 'muazkh',
-                    username: 'webrtc@live.com'
-                }
-            ]
-        }
-    });
-
+    var peer = new Peer({key: 'peerjs', host: 'peerjs-stc.herokuapp.com', secure: true, port: 443});
     // Once the initialization succeeds:
     // Show the ID that allows other user to connect to your session.
     peer.on('open', function () {
