@@ -7,7 +7,7 @@
     "version": "1.0.0",
     "dependencies": {
         "express": "^4.15.3",
-        "peerjs": "~0.3.14"
+        "peerjs": "~0.3.14",
 	"peer": "~0.2.8"
     }
 }
