@@ -22,9 +22,11 @@ var app = express();
 var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
 
+var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080
+var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 
 
-app.use('/peerjs', require('peer').ExpressPeerServer(app.listen(8080)));
+app.use('/peerjs', require('peer').ExpressPeerServer(app.listen(server_port)));
 /**
  *  Show in the console the URL access for other devices in the network
  */
@@ -62,9 +64,9 @@ Object.keys(ifaces).forEach(function (ifname) {
 // Allow access from all the devices of the network (as long as connections are allowed by the firewall)
 var LANAccess = "0.0.0.0";
 // For http
-httpServer.listen(8080, LANAccess);
+httpServer.listen(server_port, server_ip_address);
 // For https
-httpsServer.listen(8443, LANAccess);
+//httpsServer.listen(server_port, LANAccess);
 
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname+'/index.html'));
