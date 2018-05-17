@@ -125,18 +125,17 @@ document.getElementById("call").addEventListener("click", function(){
         success: function(stream){
             window.localStream = stream;
             onReceiveStream(stream, 'my-camera');
+            var call = peer.call(peer_id, window.localStream);
+            call.on('stream', function (stream) {
+                window.peer_stream = stream;
+
+                onReceiveStream(stream, 'peer-camera');
+            });
         },
         error: function(err){
             alert("Không thể truy cập camera!");
             console.error(err);
         }
-    });
-
-    var call = peer.call(peer_id, window.localStream);
-    call.on('stream', function (stream) {
-        window.peer_stream = stream;
-
-        onReceiveStream(stream, 'peer-camera');
     });
 });
 
