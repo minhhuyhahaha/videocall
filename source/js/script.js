@@ -39,16 +39,6 @@ peer.on('call', function (call) {
     var acceptsCall = confirm(peer_name + " muốn gọi video với bạn, bạn có đồng ý không?");
 
     if(acceptsCall){
-        requestLocalVideo({
-            success: function(stream){
-                window.localStream = stream;
-                onReceiveStream(stream, 'my-camera');
-            },
-            error: function(err){
-                alert("Không thể truy cập camera!");
-                console.error(err);
-            }
-        });
         //Trả lời cuộc gọi bằng stream video của mình
         call.answer(window.localStream);
 
@@ -131,22 +121,22 @@ x.oninput = () =>{
 
 //Yêu cầu 1 cuộc gọi cho người khác
 document.getElementById("call").addEventListener("click", function(){
-    requestLocalVideo({
-        success: function(stream){
-            window.localStream = stream;
-            onReceiveStream(stream, 'my-camera');
-            var call = peer.call(peer_id, window.localStream);
-            call.on('stream', function (stream) {
-                window.peer_stream = stream;
-
-                onReceiveStream(stream, 'peer-camera');
-            });
-        },
-        error: function(err){
-            alert("Không thể truy cập camera!");
-            console.error(err);
-        }
+    var call = peer.call(peer_id, window.localStream);
+    call.on('stream', function (stream) {
+        window.peer_stream = stream;
+        onReceiveStream(stream, 'peer-camera');
     });
+});
+
+requestLocalVideo({
+    success: function(stream){
+        window.localStream = stream;
+        onReceiveStream(stream, 'my-camera');
+    },
+    error: function(err){
+        alert("Không thể truy cập camera!");
+        console.error(err);
+    }
 });
 
 //Bắt đầu kết nối sau khi click button
