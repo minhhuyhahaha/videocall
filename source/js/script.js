@@ -3,7 +3,25 @@ var peer_name;
 var username;
 var conn;
 var connected = false;
-var peer = new Peer({key: 'peerjs', host: 'peerjs-stc.herokuapp.com', secure: true, port: 443});
+var customConfig;
+$(document).ready( function () {
+    $.ajax ({
+        url: "https://global.xirsys.net/_turn/myturnserver/",
+        type: "PUT",
+        async: false,
+        headers: {
+            "Authorization": "Basic " + btoa("songtinhcam03:a7f4da8c-59ef-11e8-826f-09fc0001476b")
+        },
+        success: function (res){
+            customConfig = res.v.iceServers;
+        }
+    });
+});
+var peer = new Peer({key: 'peerjs',
+                    host: 'peerjs-stc.herokuapp.com',
+                    secure: true,
+                    port: 443,
+                    config: customConfig});
 var socket = io();
 socket.on('join', function (info) {
     var x = document.getElementById("list-online");
