@@ -36,9 +36,19 @@ peer.on('error', function(err){
 
 //Khi nhận được cuộc gọi
 peer.on('call', function (call) {
-    var acceptsCall = confirm(peer_name + " muốn gọi vide với bạn, bạn có đồng ý không?");
+    var acceptsCall = confirm(peer_name + " muốn gọi video với bạn, bạn có đồng ý không?");
 
     if(acceptsCall){
+        requestLocalVideo({
+            success: function(stream){
+                window.localStream = stream;
+                onReceiveStream(stream, 'my-camera');
+            },
+            error: function(err){
+                alert("Không thể truy cập camera!");
+                console.error(err);
+            }
+        });
         //Trả lời cuộc gọi bằng stream video của mình
         call.answer(window.localStream);
 
