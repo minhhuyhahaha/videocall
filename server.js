@@ -11,9 +11,9 @@ var express = require('express');
 var app = express();
 var httpServer = http.createServer(app);
 var io = require("socket.io")(httpServer);
-var LANAccess = "0.0.0.0";
-
-httpServer.listen(8080, LANAccess);
+//var LANAccess = "0.0.0.0";
+var port = process.env.PORT || 8080;
+httpServer.listen(port);
 
 io.on('connection', function (user) {
     user.on('join', function (info) {
