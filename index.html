@@ -1,92 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Trò chuyện trức tuyến by Nguyễn Văn Thành</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css">
+        <script defer src="/resources/js/peer.min.js"></script>
+        <script defer src="/socket.io/socket.io.js"></script>
+        <script defer src="/resources/js/script.js"></script>
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <title>Trò chuyện trức tuyến by Nguyễn Văn Thành</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css">
-    <script defer src="/resources/js/peer.min.js"></script>
-    <script defer src="/socket.io/socket.io.js"></script>
-    <script defer src="/resources/js/script.js"></script>
-</head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-2 col-lg-2">
+                    <div class="hidden" id="list-online">
+                        <div class="list-group-item list-group-item-action active">
+                        Danh sách người dùng
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 col-lg-5">
+                    <div class="text-center">
+                        <video id="my-camera"  width="100%" height="auto" autoplay="autoplay" muted="true" class="center-block"></video>
+                        <h3><span class="label label-primary" id="username"></span></h3>
+                    </div>
+                </div>
 
-<body>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-2 col-lg-2">
-                <div class="hidden" id="list-online">
-                    <div class="list-group-item list-group-item-action active">
-                    Danh sách người dùng
+                <div class="col-md-5 col-lg-5">
+                    <div class="text-center">
+                        <video id="peer-camera" width="100%" height="auto" autoplay="autoplay" class="center-block"></video>
+                        <h3><span class="label label-primary" id="connected_peer"></span></h3>
                     </div>
                 </div>
             </div>
-            <div class="col-md-5 col-lg-5">
-                <div class="text-center">
-                    <video id="my-camera"  width="100%" height="auto" autoplay="autoplay" muted="true" class="center-block"></video>
-                    <h3><span class="label label-primary" id="username"></span></h3>
-                </div>
-            </div>
 
-            <div class="col-md-5 col-lg-5">
-                <div class="text-center">
-                    <video id="peer-camera" width="100%" height="auto" autoplay="autoplay" class="center-block"></video>
-                    <h3><span class="label label-primary" id="connected_peer"></span></h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <h1 class="text-center">
-                Trò chuyện trực tuyến
-            </h1>
-            <div class="col-md-12 col-lg-12">
-                <div class="form-horizontal" id="connection-form">
-                    <fieldset>
-                        <legend>Thông tin</legend>
-                        <div class="form-group">
-                            <label for="name" class="col-lg-2 control-label">Tên của bạn</label>
-                            <div class="col-lg-10">
-                                <input type="text" class="form-control" name="name" id="name" placeholder="Nhập vào tên...">
+            <div class="row">
+                <h1 class="text-center">
+                    Trò chuyện trực tuyến
+                </h1>
+                <div class="col-md-12 col-lg-12">
+                    <div class="form-horizontal" id="connection-form">
+                        <fieldset>
+                            <legend>Thông tin</legend>
+                            <div class="form-group">
+                                <label for="name" class="col-lg-2 control-label">Tên của bạn</label>
+                                <div class="col-lg-10">
+                                    <input type="text" class="form-control" name="name" id="name" placeholder="Nhập vào tên...">
+                                </div>
                             </div>
+                            <div class="form-group">
+                                <div class="col-lg-10">
+                                    <div id="connected_peer_container" class="hidden">
+                                        Có người đang muốn kết nối với bạn
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-10 col-lg-offset-2">
+                                    <button id="connect-to-peer-btn" class="btn btn-primary">Tham gia</button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-12">
+                    <div id="chat" class="hidden">
+                        <div id="messages-container">
+                            <div class="list-group" id="messages"></div>
                         </div>
-                        <div class="form-group">
-                            <div class="col-lg-10">
-                                <div id="connected_peer_container" class="hidden">
-                                    Có người đang muốn kết nối với bạn
+                        <div id="message-container">
+                            <div class="form-group">
+                                <label class="control-label">Nhắn tin trực tuyến</label>
+                                <div class="input-group">
+                                    <span class="input-group-btn">
+                                        <button id="call" class="btn btn-info">Call</button>
+                                    </span>
+                                    <textarea class="form-control" rows="1" id="message" placeholder="Nhập nội dung tin nhắn ..."></textarea>
+                                    <span class="input-group-btn">
+                                        <button id="send-message" class="btn btn-success">Gửi</button>
+                                    </span>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="col-lg-10 col-lg-offset-2">
-                                <button id="connect-to-peer-btn" class="btn btn-primary">Tham gia</button>
-                            </div>
-                        </div>
-                    </fieldset>
-                </div>
-            </div>
-            <div class="col-md-12 col-lg-12">
-                <div id="chat" class="hidden">
-                    <div id="messages-container">
-                        <div class="list-group" id="messages"></div>
-                    </div>
-                    <div id="message-container">
-                        <div class="form-group">
-                            <label class="control-label">Nhắn tin trực tuyến</label>
-                            <div class="input-group">
-                                <span class="input-group-btn">
-                                    <button id="call" class="btn btn-info">Call</button>
-                                </span>
-                                <textarea class="form-control" rows="1" id="message" placeholder="Nhập nội dung tin nhắn ..."></textarea>
-                                <span class="input-group-btn">
-                                    <button id="send-message" class="btn btn-success">Gửi</button>
-                                </span>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</body>
-
+    </body>
 </html>
