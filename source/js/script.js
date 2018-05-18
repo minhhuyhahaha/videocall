@@ -69,7 +69,7 @@ peer.on('connection', function (connection) {
     //Sử dụng handleMessage để callback khi có tin nhắn đến
     conn.on('data', handleMessage);
     document.getElementById("connected_peer").innerText = peer_name;
-    connectPeer(peer_id);
+    document.getElementById("chat").className = "";
 });
 
 
