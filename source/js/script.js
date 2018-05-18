@@ -3,22 +3,43 @@ var peer_name;
 var username;
 var conn;
 var customConfig;
-$.ajax ({
-    url: "https://global.xirsys.net/_turn/myturnserver/",
-    type: "PUT",
-    async: false,
-    headers: {
-        "Authorization": "Basic " + btoa("songtinhcam03:a7f4da8c-59ef-11e8-826f-09fc0001476b")
-    },
-    success: function (res){
-        customConfig = res.v.iceServers;
-    }
-});
 var peer = new Peer({key: 'peerjs',
                     host: 'peerjs-stc.herokuapp.com',
                     secure: true,
                     port: 443,
-                    config: {'iceServers': customConfig }
+                    config: {'iceServers':  [   {  url: 'stun:s3.xirsys.com'},
+                                                {
+                                                    username: "c21e0412-5a9c-11e8-bcdf-4bff8ef678a9",
+                                                    url: "turn:s3.xirsys.com:80?transport=udp",
+                                                    credential: "c21e06b0-5a9c-11e8-82e4-039ee05c0ab6"
+                                                },
+                                                {
+                                                    username: "c21e0412-5a9c-11e8-bcdf-4bff8ef678a9",
+                                                    url: "turn:s3.xirsys.com:3478?transport=udp",
+                                                    credential: "c21e06b0-5a9c-11e8-82e4-039ee05c0ab6"
+                                                },
+                                                {
+                                                    username: "c21e0412-5a9c-11e8-bcdf-4bff8ef678a9",
+                                                    url: "turn:s3.xirsys.com:80?transport=tcp",
+                                                    credential: "c21e06b0-5a9c-11e8-82e4-039ee05c0ab6"
+                                                },
+                                                {
+                                                    username: "c21e0412-5a9c-11e8-bcdf-4bff8ef678a9",
+                                                    url: "turn:s3.xirsys.com:3478?transport=tcp",
+                                                    credential: "c21e06b0-5a9c-11e8-82e4-039ee05c0ab6"
+                                                },
+                                                {
+                                                    username: "c21e0412-5a9c-11e8-bcdf-4bff8ef678a9",
+                                                    url: "turns:s3.xirsys.com:443?transport=tcp",
+                                                    credential: "c21e06b0-5a9c-11e8-82e4-039ee05c0ab6"
+                                                },
+                                                {
+                                                    username: "c21e0412-5a9c-11e8-bcdf-4bff8ef678a9",
+                                                    url: "turns:s3.xirsys.com:5349?transport=tcp",
+                                                    credential: "c21e06b0-5a9c-11e8-82e4-039ee05c0ab6"
+                                                },
+                                            ]
+                            }
                     });
 var socket = io();
 
@@ -203,6 +224,8 @@ function connectPeer(id){
             'username': username
         }
     });
+	peer_name = document.getElementById(id).innerHTML;
+	document.getElementById("connected_peer").innerText = peer_name;
     conn.on('data', handleMessage);
     document.getElementById("chat").className = "";
 }
