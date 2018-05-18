@@ -27,7 +27,8 @@ socket.on('new_user', function (user) {
 });
 
 socket.on('user_disconnect', function (peerid) {
-    document.getElementById(peerid).remove();
+    var x = document.getElementById(peerid);
+    if(x) x.remove();
 });
 
 socket.on('list_online', function (listUser) {
