@@ -2,7 +2,6 @@ var peer_id;
 var peer_name;
 var username;
 var conn;
-var connected = false;
 var customConfig;
 $.ajax ({
     url: "https://global.xirsys.net/_turn/myturnserver/",
@@ -70,9 +69,7 @@ peer.on('connection', function (connection) {
     //Sử dụng handleMessage để callback khi có tin nhắn đến
     conn.on('data', handleMessage);
     document.getElementById("connected_peer").innerText = peer_name;
-    if(!connected){
-        setTimeout(() => connectPeer(peer_id),1000);
-    }
+	connectPeer(peer_id);
 });
 
 
@@ -82,29 +79,23 @@ peer.on('disconnected', function() {
 
 //Khi nhận được cuộc gọi
 peer.on('call', function (call) {
-    var acceptsCall = confirm(peer_name + " muốn gọi video với bạn, bạn có đồng ý không?");
+    //Trả lời cuộc gọi bằng stream video của mình
+    call.answer(window.localStream);
 
-    if(acceptsCall){
-        //Trả lời cuộc gọi bằng stream video của mình
-        call.answer(window.localStream);
+    // Receive data
+    call.on('stream', function (stream) {
+        // Lưu stream vào cục bộ
+        window.peer_stream = stream;
+        // Hiện thị stream của người khác ở peer-camera!
+        onReceiveStream(stream, 'peer-camera');
+    });
 
-        // Receive data
-        call.on('stream', function (stream) {
-            // Lưu stream vào cục bộ
-            window.peer_stream = stream;
-            // Hiện thị stream của người khác ở peer-camera!
-            onReceiveStream(stream, 'peer-camera');
-        });
+    // Khi kết thúc gọi
+    call.on('close', function(){
+        alert("Cuộc gọi đã kết thúc");
+    });
 
-        // Khi kết thúc gọi
-        call.on('close', function(){
-            alert("Cuộc gọi đã kết thúc");
-        });
-
-        // Để ngắt cuộc gọi dùng call.close()
-    }else{
-        console.log("Kết thúc cuộc gọi!");
-    }
+    // Để ngắt cuộc gọi dùng call.close()
 });
 
 function requestLocalVideo(callbacks) {
@@ -185,7 +176,6 @@ document.getElementById("connect-to-peer-btn").addEventListener("click", functio
 });
 
 function connectPeer(id){
-    connected = true;
     conn = peer.connect(id, {
         metadata: {
             'username': username
