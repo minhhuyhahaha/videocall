@@ -81,7 +81,7 @@ peer.on('disconnected', function() {
 peer.on('call', function (call) {
     //Trả lời cuộc gọi bằng stream video của mình
     call.answer(window.localStream);
-
+    
     // Receive data
     call.on('stream', function (stream) {
         // Lưu stream vào cục bộ
@@ -108,7 +108,8 @@ function onReceiveStream(stream, element_id) {
     var video = document.getElementById(element_id);
     video.src = window.URL.createObjectURL(stream);
     // Lưu thành toàn cục
-    window.peer_stream = stream;
+    //window.peer_stream = stream;
+    console.log(stream,element_id);
 }
 
 function handleMessage(data) {
