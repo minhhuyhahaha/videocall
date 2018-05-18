@@ -21,11 +21,39 @@ var peer = new Peer({key: 'peerjs',
                     port: 443,
                     config: customConfig});
 var socket = io();
-socket.on('join', function (info) {
+
+socket.on('new_user', function (user) {
+    document.getElementById("list-online").innerHTML += `<button id="${user.peerid}" type="button" class="list-group-item list-group-item-action" onclick="connectPeer('${user.peerid}');">${user.username}</button>`;
+});
+
+socket.on('user_disconnect', function (peerid) {
+    document.getElementById(peerid).remove();
+});
+
+socket.on('list_online', function (listUser) {
     var x = document.getElementById("list-online");
-    var d = document.createElement('div');
-    d.innerHTML = `<button type="button" class="list-group-item list-group-item-action" onclick="connectPeer('${info.id}');">${info.username}</button>`;
-    x.appendChild(d.firstChild);
+    document.getElementById("username").innerText = username;
+    document.getElementById("show-camera").className = "row";
+    document.getElementById("connection-form").className += " hidden";
+    x.innerHTML = `<div class="list-group-item list-group-item-action active">Danh sách online</div>`;
+    for (user of listUser) {
+        if(user.peerid !== peer.id)
+            x.innerHTML += `<button id="${user.peerid}" type="button" class="list-group-item list-group-item-action" onclick="connectPeer('${user.peerid}');">${user.username}</button>`;
+    }
+    requestLocalVideo({
+        success: function(stream){
+            window.localStream = stream;
+            onReceiveStream(stream, 'my-camera');
+        },
+        error: function(err){
+            alert("Không thể truy cập camera!");
+            console.error(err);
+        }
+    });
+});
+
+socket.on('register_fail', function () {
+    alert("Người dùng này đã tồn tại, vui lòng chọn tên khác!");
 });
 
 peer.on('open', function () {
@@ -45,9 +73,9 @@ peer.on('connection', function (connection) {
     }
 });
 
-peer.on('error', function(err){
-    //alert("Đã có lỗi xảy ra: " + err);
-    console.error(err);
+
+peer.on('disconnected', function() {
+    peer.reconnect();
 });
 
 //Khi nhận được cuộc gọi
@@ -144,25 +172,11 @@ document.getElementById("call").addEventListener("click", function(){
     });
 });
 
-requestLocalVideo({
-    success: function(stream){
-        window.localStream = stream;
-        onReceiveStream(stream, 'my-camera');
-    },
-    error: function(err){
-        alert("Không thể truy cập camera!");
-        console.error(err);
-    }
-});
-
 //Bắt đầu kết nối sau khi click button
 document.getElementById("connect-to-peer-btn").addEventListener("click", function(){
     username = document.getElementById("name").value;
-    document.getElementById("username").innerText = username;
     if (username) {
-        socket.emit('join',{"username" : username, "id": peer.id});
-        document.getElementById("list-online").className = "list-group";
-        document.getElementById("connection-form").className += " hidden";
+        socket.emit('new_user',{"username" : username, "peerid": peer.id});
     }else{
         alert("Bạn phải nhập tên của mình");
     }    
