@@ -79,7 +79,7 @@ peer.on('disconnected', function() {
 
 //Khi nhận được cuộc gọi
 peer.on('call', function (call) {
-    var acceptsCall = confirm("Videocall incoming, do you want to accept it ?");
+    var acceptsCall = confirm(peer_name+" muốn gọi video cho bạn, bạn có đồng ý không?");
     if(acceptsCall){
         //Trả lời cuộc gọi bằng stream video của mình
         call.answer(window.localStream);
@@ -99,6 +99,15 @@ peer.on('call', function (call) {
 
         // Để ngắt cuộc gọi dùng call.close()
     }
+});
+
+//Yêu cầu 1 cuộc gọi cho người khác
+document.getElementById("call").addEventListener("click", function(){
+    var call = peer.call(peer_id, window.localStream);
+    call.on('stream', function (stream) {
+        window.peer_stream = stream;
+        onReceiveStream(stream, 'peer-camera');
+    });
 });
 
 function requestLocalVideo(callbacks) {
@@ -159,15 +168,6 @@ x.oninput = () =>{
     x.setAttribute('style', 'min-height:38px; height: auto;');
     x.setAttribute('style', 'min-height:38px; height: ' + x.scrollHeight + 'px; overflow-y:hidden;');
 }
-
-//Yêu cầu 1 cuộc gọi cho người khác
-document.getElementById("call").addEventListener("click", function(){
-    var call = peer.call(peer_id, window.localStream);
-    call.on('stream', function (stream) {
-        window.peer_stream = stream;
-        onReceiveStream(stream, 'peer-camera');
-    });
-});
 
 //Bắt đầu kết nối sau khi click button
 document.getElementById("connect-to-peer-btn").addEventListener("click", function(){
