@@ -41,16 +41,6 @@ socket.on('list_online', function (listUser) {
         if(user.peerid !== peer.id)
             x.innerHTML += `<button id="${user.peerid}" type="button" class="list-group-item list-group-item-action" onclick="connectPeer('${user.peerid}');">${user.username}</button>`;
     }
-    requestLocalVideo({
-        success: function(stream){
-            window.localStream = stream;
-            onReceiveStream(stream, 'my-camera');
-        },
-        error: function(err){
-            alert("Không thể truy cập camera!");
-            console.error(err);
-        }
-    });
 });
 
 socket.on('register_fail', function () {
@@ -81,32 +71,59 @@ peer.on('disconnected', function() {
 peer.on('call', function (call) {
     var acceptsCall = confirm(peer_name+" muốn gọi video cho bạn, bạn có đồng ý không?");
     if(acceptsCall){
-        //Trả lời cuộc gọi bằng stream video của mình
-        call.answer(window.localStream);
+        requestLocalVideo({
+            success: function(localstream){
+                window.localStream = localstream;
+                onReceiveStream(localstream, 'my-camera');
+                //Trả lời cuộc gọi bằng stream video của mình
+                call.answer(localstream);
 
-        // Receive data
-        call.on('stream', function (stream) {
-            // Lưu stream vào cục bộ
-            window.peer_stream = stream;
-            // Hiện thị stream của người khác ở peer-camera!
-            onReceiveStream(stream, 'peer-camera');
+                // Nhận stream của người khác
+                call.on('stream', function (stream) {
+                    // Lưu stream vào cục bộ
+                    window.peer_stream = stream;
+                    // Hiện thị stream của người khác ở peer-camera!
+                    onReceiveStream(stream, 'peer-camera');
+                });
+
+                // Khi kết thúc gọi
+                call.on('close', function(){
+                    alert("Cuộc gọi đã kết thúc");
+                });
+
+                // Để ngắt cuộc gọi dùng call.close()
+            },
+            error: function(err){
+                alert("Không thể truy cập camera!");
+                console.error(err);
+            }
         });
-
-        // Khi kết thúc gọi
-        call.on('close', function(){
-            alert("Cuộc gọi đã kết thúc");
-        });
-
-        // Để ngắt cuộc gọi dùng call.close()
     }
 });
 
 //Yêu cầu 1 cuộc gọi cho người khác
 document.getElementById("call").addEventListener("click", function(){
-    var call = peer.call(peer_id, window.localStream);
-    call.on('stream', function (stream) {
-        window.peer_stream = stream;
-        onReceiveStream(stream, 'peer-camera');
+    requestLocalVideo({
+        success: function(localstream){
+            window.localStream = localstream;
+            onReceiveStream(localstream, 'my-camera');
+            var call = peer.call(peer_id, localstream);
+            
+            // Nhận stream của người khác
+            call.on('stream', function (stream) {
+                window.peer_stream = stream;
+                onReceiveStream(stream, 'peer-camera');
+            });
+            
+            // Khi kết thúc gọi
+            call.on('close', function(){
+                alert("Cuộc gọi đã kết thúc");
+            });
+        },
+        error: function(err){
+            alert("Không thể truy cập camera!");
+            console.error(err);
+        }
     });
 });
 
