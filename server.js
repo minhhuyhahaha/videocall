@@ -22,8 +22,10 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
     	var index = listUser.findIndex(i => i.peerid === socket.peerid);
-    	listUser.splice(index, 1);
-    	socket.broadcast.emit('user_disconnect',socket.peerid);
+    	if(index > -1){
+			listUser.splice(index, 1);
+			socket.broadcast.emit('user_disconnect',socket.peerid);
+		}
     });
 });
 
