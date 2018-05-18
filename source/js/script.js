@@ -82,29 +82,23 @@ peer.on('disconnected', function() {
 
 //Khi nhận được cuộc gọi
 peer.on('call', function (call) {
-    var acceptsCall = confirm(peer_name + " muốn gọi video với bạn, bạn có đồng ý không?");
+    //Trả lời cuộc gọi bằng stream video của mình
+    call.answer(window.localStream);
 
-    if(acceptsCall){
-        //Trả lời cuộc gọi bằng stream video của mình
-        call.answer(window.localStream);
+    // Receive data
+    call.on('stream', function (stream) {
+        // Lưu stream vào cục bộ
+        window.peer_stream = stream;
+        // Hiện thị stream của người khác ở peer-camera!
+        onReceiveStream(stream, 'peer-camera');
+    });
 
-        // Receive data
-        call.on('stream', function (stream) {
-            // Lưu stream vào cục bộ
-            window.peer_stream = stream;
-            // Hiện thị stream của người khác ở peer-camera!
-            onReceiveStream(stream, 'peer-camera');
-        });
+    // Khi kết thúc gọi
+    call.on('close', function(){
+        alert("Cuộc gọi đã kết thúc");
+    });
 
-        // Khi kết thúc gọi
-        call.on('close', function(){
-            alert("Cuộc gọi đã kết thúc");
-        });
-
-        // Để ngắt cuộc gọi dùng call.close()
-    }else{
-        console.log("Kết thúc cuộc gọi!");
-    }
+    // Để ngắt cuộc gọi dùng call.close()
 });
 
 function requestLocalVideo(callbacks) {
