@@ -180,6 +180,7 @@ document.getElementById("connect-to-peer-btn").addEventListener("click", functio
 });
 
 function connectPeer(id){
+    peer_id = id;
     conn = peer.connect(id, {
         metadata: {
             'username': username
