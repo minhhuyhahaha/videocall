@@ -156,7 +156,8 @@ function requestLocalVideo(callbacks) {
 function onReceiveStream(stream, element_id) {
     //Hiển thị video
     var video = document.getElementById(element_id);
-    video.src = window.URL.createObjectURL(stream);
+    // video.src = window.URL.createObjectURL(stream);
+    video.srcObject = stream;
     // Lưu thành toàn cục
     //window.peer_stream = stream;
     console.log(stream,element_id);
